@@ -13,7 +13,7 @@ function script:getURLArray($favorites_path){
         # 先頭の「URL=」を削る。$tempVal自体はオブジェクト配列なので、添え字[0](マッチの1個目,String)を直接指定してアクセス
         $url = $tempVal[0].Substring(4,$tempVal[0].Length-4)
 
-        $urlArray += ,@($favorite.fullname,$url)
+        $urlArray += ,@($favorite.name,$url)
     }
     return $urlArray
 }
