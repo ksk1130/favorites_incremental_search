@@ -2,6 +2,9 @@ param(
     [string]$favorites_path    # 処理対象パス(ディレクトリでもファイル名でも受け付ける)
 )
 
+# エラーがあった時点で処理終了
+$ErrorActionPreference = "stop"
+
 function script:getURLArray($favorites_path){
     $favorites = (Get-ChildItem -Recurse $favorites_path | Where-Object { $_.Attributes -ne "Directory" -and $_.Extension -eq ".url" })
 
