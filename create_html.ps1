@@ -15,8 +15,12 @@ function script:getURLArray($favorites_path) {
         $url = $tempVal[0].Substring(4, $tempVal[0].Length - 4)
 
         # 多次元配列として要素を追加
-        $urlArray += , @($favorite.name, $url)
+        $urlArray += , @($url, $favorite.name)
     }
+
+    # URLの昇順でソートする
+    $urlArray = $urlArray | Sort-Object 
+
     return $urlArray
 }
 
@@ -24,7 +28,7 @@ function script:createHtml($urlArray) {
     # 順序なしリストを組み立て
     $favorites_list = '<ul id="favoritesList" style="display:none">'
     foreach ($cols in $urlArray) {
-        $favorites_list += "<li><a href='" + $cols[1] + "' target='_blank'>" + $cols[0] + "</a></li>`r`n"
+        $favorites_list += "<li><a href='" + $cols[0] + "' target='_blank'>" + $cols[1] + "</a></li>`r`n"
     }
     $favorites_list += "</ul>"
 
