@@ -1,29 +1,73 @@
 param(
-    [string]$favorites_path    # å‡¦ç†å¯¾è±¡ãƒ‘ã‚¹(ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã§ã‚‚ãƒ•ã‚¡ã‚¤ãƒ«åã§ã‚‚å—ã‘ä»˜ã‘ã‚‹)
+    [string]$favorites_path    # ˆ—‘ÎÛƒpƒX(ƒfƒBƒŒƒNƒgƒŠ‚Å‚àƒtƒ@ƒCƒ‹–¼‚Å‚àó‚¯•t‚¯‚é)
 )
 
-# ã‚¨ãƒ©ãƒ¼ãŒã‚ã£ãŸæ™‚ç‚¹ã§å‡¦ç†çµ‚äº†
+# ƒGƒ‰[‚ª‚ ‚Á‚½“_‚Åˆ—I—¹
 $ErrorActionPreference = "stop"
 
-function script:getURLArray($favorites_path){
+function script:getURLArray($favorites_path) {
     $favorites = (Get-ChildItem -Recurse $favorites_path | Where-Object { $_.Attributes -ne "Directory" -and $_.Extension -eq ".url" })
 
     foreach ($favorite in $favorites) {
         $tempVal = (get-content $favorite.fullname) -match "^URL=.+"
-        # å…ˆé ­ã®ã€ŒURL=ã€ã‚’å‰Šã‚‹ã€‚$tempValè‡ªä½“ã¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆé…åˆ—ãªã®ã§ã€æ·»ãˆå­—[0](ãƒãƒƒãƒã®1å€‹ç›®,String)ã‚’ç›´æ¥æŒ‡å®šã—ã¦ã‚¢ã‚¯ã‚»ã‚¹
-        $url = $tempVal[0].Substring(4,$tempVal[0].Length-4)
+        # æ“ª‚ÌuURL=v‚ğí‚éB$tempVal©‘Ì‚ÍƒIƒuƒWƒFƒNƒg”z—ñ‚È‚Ì‚ÅA“Y‚¦š[0](ƒ}ƒbƒ`‚Ì1ŒÂ–Ú,String)‚ğ’¼Úw’è‚µ‚ÄƒAƒNƒZƒX
+        $url = $tempVal[0].Substring(4, $tempVal[0].Length - 4)
 
-        $urlArray += ,@($favorite.name,$url)
+        $urlArray += , @($favorite.name, $url)
     }
     return $urlArray
+}
+
+function script:createHtml($urlArray) {
+    # ‡˜‚È‚µƒŠƒXƒg‚ğ‘g‚İ—§‚Ä
+    $favorites_list = '<ul id="favoritesList" style="display:none">'
+    foreach ($cols in $urlArray) {
+        $favorites_list += "<li><a href='" + $cols[1] + "' target='_blank'>" + $cols[0] + "</a></li>`r`n"
+    }
+    $favorites_list += "</ul>"
+
+    # ƒqƒAƒhƒLƒ…ƒƒ“ƒg‚Éã‹L‚ÌƒŠƒXƒg‚ğ–„‚ß‚İ
+    $htmlTemplate = @"
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Favorites Search</title>
+<meta charset="utf-8">
+<script type="text/javascript">
+    function searchFavorite(){
+        console.log(document.getElementById("searchWord").value);
+    
+        console.log(document.getElementById("favoritesList"));
+
+        document.getElementById("resultArea").innerHTML = document.getElementById("searchWord").value;
+    }
+
+    function clearResult(){
+        document.getElementById("resultArea").innerHTML = "";
+    }
+</script>
+</head>
+<body>
+<h1>Favorites Search</h1>
+<form>
+<input type="text" value="" id="searchWord" onKeyUp="searchFavorite()"/>
+<input type="reset" value="ƒŠƒZƒbƒg" onclick="clearResult()"/>
+</form>
+<div id="resultArea">
+</div>
+$favorites_list
+</body>
+</html>
+"@
+    # HTMLƒtƒ@ƒCƒ‹‚Æ‚µ‚Äo—Í
+    Write-Output $htmlTemplate | Set-Content -Encoding UTF8 favorites_search.html
 }
 
 function script:Main($favorites_path) {
     $urlArray = getUrlArray $favorites_path
     
-    foreach($cols in $urlArray){
-        write-host $cols[0] $cols[1]
-    }
+    createHtml $urlArray
 }
 
 Main $favorites_path
