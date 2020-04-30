@@ -11,7 +11,9 @@ function narrowFavorites(searchWord) {
   // セットを回しながら合致する要素を結果表示エリアに表示
   resultSet.forEach(function (value) {
     console.log(value);
-    if (value.indexOf(searchWord) > 0) {
+    
+    // 検索文字列、検索対象ともに小文字同士で比較する
+    if (value.toLowerCase().indexOf(searchWord) > 0) {
       var li = document.createElement("li");
       li.innerHTML = value;
 
@@ -24,6 +26,9 @@ function narrowFavorites(searchWord) {
 function searchFavorite() {
   var searchWord = document.getElementById("searchWord").value;
   console.log(searchWord);
+
+  // 検索文字列は小文字に変換する
+  searchWord = new String(searchWord).toLowerCase();
 
   // BSキーなどで入力エリアが空になったらリセット
   if (searchWord == "") {
@@ -47,7 +52,8 @@ function searchFavorite() {
 
     var line = a.href + "\t" + a.innerHTML;
 
-    if (line.indexOf(searchWord) > 0) {
+    // 検索文字列、検索対象ともに小文字同士で比較する
+    if (line.toLowerCase().indexOf(searchWord) > 0) {
       resultSet.add(line);
     }
   }
