@@ -26,7 +26,7 @@ function script:getURLArray($favorites_path) {
 
 function script:createHtml($urlArray) {
     # ‡˜‚È‚µƒŠƒXƒg‚ğ‘g‚İ—§‚Ä
-    $favorites_list = '<ul id="favoritesList" style="display:none">'
+    $favorites_list = '<ul id="favoritesList" style="display:none">`r`n'
     foreach ($cols in $urlArray) {
         $favorites_list += "<li><a href='" + $cols[0] + "' target='_blank'>" + $cols[1] + "</a></li>`r`n"
     }
@@ -40,19 +40,7 @@ function script:createHtml($urlArray) {
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Favorites Search</title>
 <meta charset="utf-8">
-<script type="text/javascript">
-    function searchFavorite(){
-        console.log(document.getElementById("searchWord").value);
-    
-        console.log(document.getElementById("favoritesList"));
-
-        document.getElementById("resultArea").innerHTML = document.getElementById("searchWord").value;
-    }
-
-    function clearResult(){
-        document.getElementById("resultArea").innerHTML = "";
-    }
-</script>
+<script type="text/javascript" src="./util.js"></script>
 </head>
 <body>
 <h1>Favorites Search</h1>
