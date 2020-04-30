@@ -26,7 +26,7 @@ function script:getURLArray($favorites_path) {
 
 function script:createHtml($urlArray) {
     # ‡˜‚È‚µƒŠƒXƒg‚ğ‘g‚İ—§‚Ä
-    $favorites_list = '<ul id="favoritesList" style="display:none">`r`n'
+    $favorites_list = '<ul id="favoritesList" style="display:none">' + "`r`n"
     foreach ($cols in $urlArray) {
         $favorites_list += "<li><a href='" + $cols[0] + "' target='_blank'>" + $cols[1] + "</a></li>`r`n"
     }
