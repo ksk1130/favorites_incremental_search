@@ -48,8 +48,8 @@ function script:createHtml($urlArray) {
 <input type="text" value="" id="searchWord" onKeyUp="searchFavorite()"/>
 <input type="reset" value="ƒŠƒZƒbƒg" onclick="clearResult()"/>
 </form>
-<div id="resultArea">
-</div>
+<ul id="resultArea">
+</ul>
 $favorites_list
 </body>
 </html>
