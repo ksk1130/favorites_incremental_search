@@ -15,8 +15,17 @@ function narrowFavorites(searchWord) {
     // 検索文字列、検索対象ともに小文字同士で比較する
     if (value.toLowerCase().indexOf(searchWord) > 0) {
       var li = document.createElement("li");
-      li.innerHTML = value;
 
+      // URL\tタイトル　を分割して配列化
+      var tempArray = value.split("\t");
+
+      // 結果表示はリンク形式にする(新規タブで表示)
+      var a = document.createElement("a")
+      a.href = tempArray[0];
+      a.innerHTML = value
+      a.setAttribute("target","_blank")
+
+      li.appendChild(a);
       parentNode.appendChild(li);
     }
   });
