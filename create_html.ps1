@@ -5,11 +5,23 @@ param(
 # エラーがあった時点で処理終了
 $ErrorActionPreference = "stop"
 
+function script:escapeFileName($targetFileName){
+    $resultFileName = $targetFileName
+
+    $resultFileName = $resultFileName -replace "\[","``["
+    $resultFileName = $resultFileName -replace "\]","``]"
+
+    return $resultFileName
+}
+
 function script:getURLArray($favorites_path) {
     $favorites = (Get-ChildItem -Recurse $favorites_path | Where-Object { $_.Attributes -ne "Directory" -and $_.Extension -eq ".url" })
 
     foreach ($favorite in $favorites) {
-        $tempVal = (get-content $favorite.fullname) -match "^URL=.+"
+        $tempStr = $favorite.fullname
+        $tempPath = escapeFileName $tempStr
+
+        $tempVal = (get-content $tempPath) -match "^URL=.+"
         # 先頭の「URL=」を削る
         # $tempVal自体はオブジェクト配列なので、添え字[0](マッチの1個目,String)を直接指定してアクセス
         $url = $tempVal[0].Substring(4, $tempVal[0].Length - 4)
