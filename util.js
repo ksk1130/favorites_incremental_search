@@ -3,9 +3,6 @@ var resultSet = new Set();
 
 // 入力にマッチする要素をさらに絞り込み、結果表示する処理
 function narrowFavorites(searchWord) {
-  // 検索を始めたらお気に入り一覧を非表示にする
-  document.getElementById("favoritesList").style ="display:none";
-
   var parentNode = document.getElementById("resultArea");
   
   // 呼び出しのたびに結果表示エリアをクリア
@@ -36,6 +33,9 @@ function narrowFavorites(searchWord) {
 
 // キーが押し上げられたら呼び出される処理
 function searchFavorite() {
+  // 検索を始めたらお気に入り一覧を非表示にする
+  document.getElementById("favoritesList").style ="display:none";
+
   var searchWord = document.getElementById("searchWord").value;
   console.log(searchWord);
 
