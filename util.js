@@ -25,7 +25,7 @@ function narrowFavorites(searchWord) {
       // 結果表示はリンク形式にする(新規タブで表示)
       var a = document.createElement("a")
       a.href = tempArray[0];
-      a.innerHTML = value
+      a.innerHTML = tempArray[1]
       a.setAttribute("target","_blank")
 
       li.appendChild(a);
