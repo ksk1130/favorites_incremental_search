@@ -4,15 +4,15 @@ var resultSet = new Set();
 // 入力にマッチする要素をさらに絞り込み、結果表示する処理
 function narrowFavorites(searchWord) {
   // 検索を始めたらお気に入り一覧を非表示にする
-  document.getElementById("favoritesList").style.display="none";
+  document.getElementById("favoritesList").style.display = "none";
 
   var parentNode = document.getElementById("resultArea");
-  
+
   // 呼び出しのたびに結果表示エリアをクリア
   parentNode.innerHTML = "";
 
   // セットを回しながら合致する要素を結果表示エリアに表示
-  resultSet.forEach(function (value) {    
+  resultSet.forEach(function (value) {
     // 検索文字列、検索対象ともに小文字同士で比較する
     if (value.toLowerCase().indexOf(searchWord) > 0) {
       var li = document.createElement("li");
@@ -21,10 +21,10 @@ function narrowFavorites(searchWord) {
       var tempArray = value.split("\t");
 
       // 結果表示はリンク形式にする(新規タブで表示)
-      var a = document.createElement("a")
+      var a = document.createElement("a");
       a.href = tempArray[0];
-      a.innerHTML = tempArray[1]
-      a.setAttribute("target","_blank")
+      a.innerHTML = tempArray[1];
+      a.setAttribute("target", "_blank");
 
       li.appendChild(a);
       parentNode.appendChild(li);
@@ -37,6 +37,9 @@ function searchFavorite() {
   var searchWord = document.getElementById("searchWord").value;
   console.log(searchWord);
 
+  // セットは呼び出し毎にクリア
+  resultSet.clear();
+
   // 検索文字列は小文字に変換する
   searchWord = new String(searchWord).toLowerCase();
 
@@ -46,13 +49,6 @@ function searchFavorite() {
     return;
   }
 
-  //　すでにセットに要素が入っていたら絞り込み処理に移行
-  if (resultSet.size > 0) {
-    narrowFavorites(searchWord);
-    return;
-  }
-
-  // 以降の処理はセットが空の時(一番最初に文字入力されたとき)に行われる
   // URL<タブ>タイトル に入力文字がマッチしたら、セットに詰めていく
   var lis = document.getElementById("favoritesList").getElementsByTagName("li");
 
@@ -78,5 +74,5 @@ function clearResult() {
   resultSet.clear();
 
   // 初期表示状態同様、お気に入り一覧を表示する
-  document.getElementById("favoritesList").style.display="inline";
+  document.getElementById("favoritesList").style.display = "inline";
 }
