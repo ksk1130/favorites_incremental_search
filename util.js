@@ -1,6 +1,20 @@
 // 入力にマッチする要素を格納するセット(重複なし、順序保持)
 var resultSet = new Set();
 
+window.onload = init;
+
+// onloadで実行した処理はここに書く
+function init(){
+  focusForm();
+  // フォーカスが当たるとonkeyupが働くため、一度クリア処理を実行
+  clearResult();
+}
+
+// 検索窓にフォーカスを当てる処理
+function focusForm() {
+  document.getElementById("searchWord").focus();
+}
+
 // 入力にマッチする要素をさらに絞り込み、結果表示する処理
 function narrowFavorites(searchWord) {
   // 検索を始めたらお気に入り一覧を非表示にする
