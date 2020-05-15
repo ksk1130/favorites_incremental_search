@@ -18,11 +18,12 @@ function focusForm() {
 // 入力にマッチする要素をさらに絞り込み、結果表示する処理
 function narrowFavorites(searchWord) {
   // 検索を始めたらお気に入り一覧を非表示にする
-  document.getElementById("favoritesList").style.display = "none";
+  document.getElementsByTagName("div").item(2).style.display = "none";
 
   var parentNode = document.getElementById("resultArea");
 
   // 呼び出しのたびに結果表示エリアをクリア
+  document.getElementsByTagName("div").item(1).style.display = "block";
   parentNode.innerHTML = "";
 
   // セットを回しながら合致する要素を結果表示エリアに表示
@@ -84,9 +85,9 @@ function searchFavorite() {
 
 // リセット処理
 function clearResult() {
-  document.getElementById("resultArea").innerHTML = "";
+  document.getElementsByTagName("div").item(1).style.display = "none";
   resultSet.clear();
 
   // 初期表示状態同様、お気に入り一覧を表示する
-  document.getElementById("favoritesList").style.display = "inline";
+  document.getElementsByTagName("div").item(2).style.display = "block";
 }
