@@ -14,6 +14,7 @@ function init() {
   countFavorites();
 }
 
+// お気に入り一覧の件数を表示する処理
 function countFavorites() {
   var lis = document.getElementById("favoritesList").getElementsByTagName("li");
 
@@ -28,6 +29,31 @@ function countFavorites() {
 // 検索窓にフォーカスを当てる処理
 function focusForm() {
   document.getElementById("searchWord").focus();
+}
+
+// 結果表示用のli要素を生成する処理
+function getViewLiElem(value) {
+  var li = document.createElement("li");
+
+  // URL\tタイトル　を分割して配列化
+  var tempArray = value.split("\t");
+
+  // 結果表示はリンク形式にする(新規タブで表示)
+  var a = document.createElement("a");
+  a.href = tempArray[0];
+
+  // マッチする文字列に着色する
+  // マッチする文字列を取得
+  var regex = new RegExp(searchWord, "gi");
+  var matched = tempArray[1].match(regex);
+
+  tempArray[1] = tempArray[1].replace(regex, "<span>" + matched + "</span>");
+  a.innerHTML = tempArray[1];
+  a.setAttribute("target", "_blank");
+
+  li.appendChild(a);
+
+  return li;
 }
 
 // 入力にマッチする要素をさらに絞り込み、結果表示する処理
@@ -45,28 +71,8 @@ function narrowFavorites(searchWord) {
   resultSet.forEach(function (value) {
     // 検索文字列、検索対象ともに小文字同士で比較する
     if (value.toLowerCase().indexOf(searchWord.toLowerCase()) > 0) {
-      var li = document.createElement("li");
+      var li = getViewLiElem(value);
 
-      // URL\tタイトル　を分割して配列化
-      var tempArray = value.split("\t");
-
-      // 結果表示はリンク形式にする(新規タブで表示)
-      var a = document.createElement("a");
-      a.href = tempArray[0];
-
-      // マッチする文字列に着色する
-      // マッチする文字列を取得
-      var regex = new RegExp(searchWord, "gi");
-      var matched = tempArray[1].match(regex);
-
-      tempArray[1] = tempArray[1].replace(
-        regex,
-        "<span>" + matched + "</span>"
-      );
-      a.innerHTML = tempArray[1];
-      a.setAttribute("target", "_blank");
-
-      li.appendChild(a);
       parentNode.appendChild(li);
     }
   });
@@ -102,8 +108,7 @@ function searchFavorite() {
   var lis = document.getElementById("favoritesList").getElementsByTagName("li");
 
   for (var i = 0; i < lis.length; i++) {
-    var li = lis[i];
-    var a = li.firstChild;
+    var a = lis[i].firstChild;
 
     var line = a.href + "\t" + a.innerHTML;
 
