@@ -4,9 +4,9 @@ var resultSet = new Set();
 window.onload = init;
 
 // onloadで実行した処理はここに書く
-function init(){
+function init() {
   focusForm();
-  
+
   // フォーカスが当たるとonkeyupが働くため、一度クリア処理を実行
   clearResult();
 
@@ -14,11 +14,11 @@ function init(){
   countFavorites();
 }
 
-function countFavorites(){
+function countFavorites() {
   var lis = document.getElementById("favoritesList").getElementsByTagName("li");
-  
+
   var h2Elem = document.getElementsByTagName("div").item(2).getElementsByTagName("h2").item(0);
-  h2Elem.innerHTML = "お気に入り ("+lis.length+")";
+  h2Elem.innerHTML = "お気に入り (" + lis.length + ")";
 }
 
 // 検索窓にフォーカスを当てる処理
@@ -56,6 +56,11 @@ function narrowFavorites(searchWord) {
       parentNode.appendChild(li);
     }
   });
+
+  var lis = document.getElementById("resultArea").getElementsByTagName("li");
+
+  var h2Elem = document.getElementsByTagName("div").item(1).getElementsByTagName("h2").item(0);
+  h2Elem.innerHTML = "検索結果 (" + lis.length + ")";
 }
 
 // キーが押し上げられたら呼び出される処理
