@@ -6,8 +6,19 @@ window.onload = init;
 // onloadで実行した処理はここに書く
 function init(){
   focusForm();
+  
   // フォーカスが当たるとonkeyupが働くため、一度クリア処理を実行
   clearResult();
+
+  // お気に入りの数を数える
+  countFavorites();
+}
+
+function countFavorites(){
+  var lis = document.getElementById("favoritesList").getElementsByTagName("li");
+  
+  var h2Elem = document.getElementsByTagName("div").item(2).getElementsByTagName("h2").item(0);
+  h2Elem.innerHTML = "お気に入り ("+lis.length+")";
 }
 
 // 検索窓にフォーカスを当てる処理
