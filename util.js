@@ -14,16 +14,46 @@ function init() {
   countFavorites();
 }
 
+// お気に入り一覧の件数を表示する処理
 function countFavorites() {
   var lis = document.getElementById("favoritesList").getElementsByTagName("li");
 
-  var h2Elem = document.getElementsByTagName("div").item(2).getElementsByTagName("h2").item(0);
+  var h2Elem = document
+    .getElementsByTagName("div")
+    .item(2)
+    .getElementsByTagName("h2")
+    .item(0);
   h2Elem.innerHTML = "お気に入り (" + lis.length + ")";
 }
 
 // 検索窓にフォーカスを当てる処理
 function focusForm() {
   document.getElementById("searchWord").focus();
+}
+
+// 結果表示用のli要素を生成する処理
+function getViewLiElem(value) {
+  var li = document.createElement("li");
+
+  // URL\tタイトル　を分割して配列化
+  var tempArray = value.split("\t");
+
+  // 結果表示はリンク形式にする(新規タブで表示)
+  var a = document.createElement("a");
+  a.href = tempArray[0];
+
+  // マッチする文字列に着色する
+  // マッチする文字列を取得
+  var regex = new RegExp(searchWord, "i");
+  var matched = tempArray[1].match(regex);
+
+  tempArray[1] = tempArray[1].replace(regex, "<span>" + matched + "</span>");
+  a.innerHTML = tempArray[1];
+  a.setAttribute("target", "_blank");
+
+  li.appendChild(a);
+
+  return li;
 }
 
 // 入力にマッチする要素をさらに絞り込み、結果表示する処理
@@ -40,39 +70,33 @@ function narrowFavorites(searchWord) {
   // セットを回しながら合致する要素を結果表示エリアに表示
   resultSet.forEach(function (value) {
     // 検索文字列、検索対象ともに小文字同士で比較する
-    if (value.toLowerCase().indexOf(searchWord) > 0) {
-      var li = document.createElement("li");
+    if (value.toLowerCase().indexOf(searchWord.toLowerCase()) > 0) {
+      var li = getViewLiElem(value);
 
-      // URL\tタイトル　を分割して配列化
-      var tempArray = value.split("\t");
-
-      // 結果表示はリンク形式にする(新規タブで表示)
-      var a = document.createElement("a");
-      a.href = tempArray[0];
-      a.innerHTML = tempArray[1];
-      a.setAttribute("target", "_blank");
-
-      li.appendChild(a);
       parentNode.appendChild(li);
     }
   });
 
   var lis = document.getElementById("resultArea").getElementsByTagName("li");
 
-  var h2Elem = document.getElementsByTagName("div").item(1).getElementsByTagName("h2").item(0);
+  var h2Elem = document
+    .getElementsByTagName("div")
+    .item(1)
+    .getElementsByTagName("h2")
+    .item(0);
   h2Elem.innerHTML = "検索結果 (" + lis.length + ")";
 }
 
 // キーが押し上げられたら呼び出される処理
 function searchFavorite() {
-  var searchWord = document.getElementById("searchWord").value;
-  console.log(searchWord);
+  var orgSearchWord = document.getElementById("searchWord").value;
+  console.log(orgSearchWord);
 
   // セットは呼び出し毎にクリア
   resultSet.clear();
 
   // 検索文字列は小文字に変換する
-  searchWord = new String(searchWord).toLowerCase();
+  searchWord = new String(orgSearchWord).toLowerCase();
 
   // BSキーなどで入力エリアが空になったらリセット
   if (searchWord == "") {
@@ -84,8 +108,7 @@ function searchFavorite() {
   var lis = document.getElementById("favoritesList").getElementsByTagName("li");
 
   for (var i = 0; i < lis.length; i++) {
-    var li = lis[i];
-    var a = li.firstChild;
+    var a = lis[i].firstChild;
 
     var line = a.href + "\t" + a.innerHTML;
 
@@ -96,7 +119,7 @@ function searchFavorite() {
   }
 
   // 画面表示を行うため、絞り込み処理を実行
-  narrowFavorites(searchWord);
+  narrowFavorites(orgSearchWord);
 }
 
 // リセット処理
