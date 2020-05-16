@@ -58,6 +58,10 @@ function script:createHtml($urlArray) {
     div {
         margin-top:30px;
     }
+
+    span {
+        color:red;
+    }
 -->
 </style>
 </head>
