@@ -44,7 +44,7 @@ function getViewLiElem(value) {
 
   // マッチする文字列に着色する
   // マッチする文字列を取得
-  var regex = new RegExp(searchWord, "gi");
+  var regex = new RegExp(searchWord, "i");
   var matched = tempArray[1].match(regex);
 
   tempArray[1] = tempArray[1].replace(regex, "<span>" + matched + "</span>");
