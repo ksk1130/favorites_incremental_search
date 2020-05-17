@@ -1,51 +1,52 @@
 param(
-    [string]$favorites_path    # 処理対象パス(ディレクトリでもファイル名でも受け付ける)
+  [string]$favorites_path                   # 処理対象パス(ディレクトリでもファイル名でも受け付ける)
+  , [string]$output_path = (Convert-Path .) # 結果ファイルの出力パス(指定しなかったらスクリプトと同じパス)
 )
 
 # エラーがあった時点で処理終了
 $ErrorActionPreference = "stop"
 
-function script:escapeFileName($targetFileName){
-    $resultFileName = $targetFileName
+function script:escapeFileName($targetFileName) {
+  $resultFileName = $targetFileName
 
-    $resultFileName = $resultFileName -replace "\[","``["
-    $resultFileName = $resultFileName -replace "\]","``]"
+  $resultFileName = $resultFileName -replace "\[", "``["
+  $resultFileName = $resultFileName -replace "\]", "``]"
 
-    return $resultFileName
+  return $resultFileName
 }
 
 function script:getURLArray($favorites_path) {
-    $favorites = (Get-ChildItem -Recurse $favorites_path | Where-Object { $_.Attributes -ne "Directory" -and $_.Extension -eq ".url" })
+  $favorites = (Get-ChildItem -Recurse $favorites_path | Where-Object { $_.Attributes -ne "Directory" -and $_.Extension -eq ".url" })
 
-    foreach ($favorite in $favorites) {
-        $tempStr = $favorite.fullname
-        $tempPath = escapeFileName $tempStr
+  foreach ($favorite in $favorites) {
+    $tempStr = $favorite.fullname
+    $tempPath = escapeFileName $tempStr
 
-        $tempVal = (get-content $tempPath) -match "^URL=.+"
-        # 先頭の「URL=」を削る
-        # $tempVal自体はオブジェクト配列なので、添え字[0](マッチの1個目,String)を直接指定してアクセス
-        $url = $tempVal[0].Substring(4, $tempVal[0].Length - 4)
+    $tempVal = (get-content $tempPath) -match "^URL=.+"
+    # 先頭の「URL=」を削る
+    # $tempVal自体はオブジェクト配列なので、添え字[0](マッチの1個目,String)を直接指定してアクセス
+    $url = $tempVal[0].Substring(4, $tempVal[0].Length - 4)
 
-        # 多次元配列として要素を追加
-        $urlArray += , @($url, $favorite.name)
-    }
+    # 多次元配列として要素を追加
+    $urlArray += , @($url, $favorite.name)
+  }
 
-    # URLの昇順でソートする
-    $urlArray = $urlArray | Sort-Object 
+  # URLの昇順でソートする
+  $urlArray = $urlArray | Sort-Object 
 
-    return $urlArray
+  return $urlArray
 }
 
-function script:createHtml($urlArray) {
-    # 順序なしリストを組み立て
-    $favorites_list = '<ol id="favoritesList">' + "`r`n"
-    foreach ($cols in $urlArray) {
-        $favorites_list += "<li><a href='" + $cols[0] + "' target='_blank'>" + $cols[1] + "</a></li>`r`n"
-    }
-    $favorites_list += "</ol>"
+function script:createHtml($urlArray, $output_path) {
+  # 順序なしリストを組み立て
+  $favorites_list = '<ol id="favoritesList">' + "`r`n"
+  foreach ($cols in $urlArray) {
+    $favorites_list += "<li><a href='" + $cols[0] + "' target='_blank'>" + $cols[1] + "</a></li>`r`n"
+  }
+  $favorites_list += "</ol>"
 
-    # ヒアドキュメントに上記のリストを埋め込み
-    $htmlTemplate = @"
+  # ヒアドキュメントに上記のリストを埋め込み
+  $htmlTemplate = @"
 <!DOCTYPE html>
 <html>
 <head>
@@ -220,14 +221,14 @@ $favorites_list
 </body>
 </html>
 "@
-    # HTMLファイルとして出力
-    Write-Output $htmlTemplate | Set-Content -Encoding UTF8 favorites_search.html
+  # HTMLファイルとして出力
+  Write-Output $htmlTemplate | Set-Content -Encoding UTF8 (Join-path $output_path "favorites_search.html")
 }
 
-function script:Main($favorites_path) {
-    $urlArray = getUrlArray $favorites_path
+function script:Main($favorites_path, $output_path) {
+  $urlArray = getUrlArray $favorites_path
     
-    createHtml $urlArray
+  createHtml $urlArray $output_path
 }
 
-Main $favorites_path
+Main $favorites_path $output_path
